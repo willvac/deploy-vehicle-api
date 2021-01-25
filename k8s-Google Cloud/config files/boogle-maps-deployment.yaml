@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boogle-maps-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: boogle-maps
+  template:
+    metadata:
+      labels:
+        component: boogle-maps
+    spec:
+      containers:
+        - name: boogle-maps
+          image: willvac/k8s-boogle-maps
+          ports:
+            - containerPort: 8081

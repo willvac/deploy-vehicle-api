@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pricing-service-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: pricing-service
+  template:
+    metadata:
+      labels:
+        component: pricing-service
+    spec:
+      containers:
+        - name: pricing-service
+          image: willvac/k8s-pricing-service
+          ports:
+            - containerPort: 8082
+          env:
+            - name: PG_HOST
+              value: postgres-pricing-cluster-ip-service
+            - name: PG_PORT
+              value: '5432'
+            - name: POSTGRES_USER
+              value: sa
+            - name: PG_DB
+              value: pricing
+            - name: PG_PASSWORD
+              value: sa1234
+            - name: HIB_DDL
+              value: update
+            - name: DB_INIT
+              value: always

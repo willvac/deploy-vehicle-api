@@ -1,0 +1,31 @@
+language: generic
+sudo: required
+services:
+    - docker
+
+before_install:
+    - docker build -t willvac/eureka-server-test -f Dockerfile.dev .
+    
+script:
+    - docker run willvac/eureka-server-test mvn test
+
+after_success:
+    - docker build -t willvac/eureka-server -f Dockerfile.prod .
+
+    # Login to the docker CLI
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+    - docker push willvac/eureka-server
+
+deploy:
+    provider: elasticbeanstalk
+    region: us-west-1
+    app: eureka-server
+    env: EurekaServer-env
+    bucket_name: elasticbeanstalk-us-west-1-414250210524
+    bucket_path: eureka-server
+    on:
+        branch: master
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
+

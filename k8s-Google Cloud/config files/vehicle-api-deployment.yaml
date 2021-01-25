@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vehicle-api-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: vehicle-api
+  template:
+    metadata:
+      labels:
+        component: vehicle-api
+    spec:
+      containers:
+        - name: vehicle-api
+          image: willvac/k8s-vehicles-api
+          ports:
+            - containerPort: 8080
+          env:
+            - name: PG_HOST
+              value: postgres-vehicles-cluster-ip-service
+            - name: PG_PORT
+              value: '5432'
+            - name: PG_DB
+              value: vehicles
+            - name: POSTGRES_USER
+              value: sa
+            - name: POSTGRES_PASSWORD
+              value: sa1234
+            - name: HIB_DDL
+              value: update
+            - name: PRICING_SERVICE_HOST
+              value: pricing-service-cluster-ip-service
+            - name: PRICING_SERVICE_PORT
+              value: '8082'
+            - name: BOOGLE_MAPS_HOST
+              value: boogle-maps-cluster-ip-service
+            - name: BOOGLE_MAPS_PORT
+              value: '8081'
+            - name: DB_INIT
+              value: ALWAYS

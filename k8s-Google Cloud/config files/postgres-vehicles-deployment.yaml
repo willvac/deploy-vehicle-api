@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-vehicles-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: postgres-vehicles
+  template:
+    metadata:
+      labels:
+        component: postgres-vehicles
+    spec:
+      volumes:
+        - name: postgres-vehicles-storage
+          persistentVolumeClaim:
+            claimName: vehicles-database-persistent-volume-claim
+      containers:
+        - name: postgres-vehicles
+          image: postgres
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - name: postgres-vehicles-storage
+              mountPath: /var/lib/postgresql/data
+              subPath: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              value: sa1234
+            - name: POSTGRES_USER
+              value: sa
+            - name: POSTGRES_DB
+              value: vehicles

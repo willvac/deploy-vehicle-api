@@ -1,0 +1,5 @@
+FROM maven:amazoncorretto
+WORKDIR /boogle-maps
+COPY ./ ./
+RUN mvn clean install
+CMD ["mvn", "spring-boot:run"]
